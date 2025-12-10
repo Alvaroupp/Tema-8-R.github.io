@@ -1,0 +1,88 @@
+---
+title: | 
+  ![](logo_uco.png){width="10%"}
+  sesion3_citas
+author: "Álvaro Urdiales, a22urpaa@uco.es"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    number_sections: true
+bibliography: ["NILs.bib", "libraries.bib"]
+link-citations: true 
+---
+
+![](logo_uco.png){width="10%"}
+
+Ya hemos visto cómo escribir texto, incorporar código y generar informes en la sesión del 5 y 6 de noviembre.
+
+El texto puede incluir palabras en cursiva (por ejemplo, las especies se escriben en cursiva) o negrita.
+
+También podemos crear párrafos dejando una línea en blanco entre ellos, o añadir saltos de línea al final de una frase usando la barra invertida ().
+
+En esta sesión, veremos cómo se crean notas a pie de página y tablas manuales y, a continuación, veremos cómo se cargan datos desde un fichero externo y cómo incluir citas  [@perez2024phenotypic]
+
+[UCO](https://www.uco.es/)
+
+| Elemento de formato |      Ejemplo en Markdown      |  Resultado esperado  |
+|:--------------------|:-----------------------------:|:--------------------:|
+| Negrita             |           **texto**           |   texto en negrita   |
+| Cursiva             |            *texto*            |   texto en cursiva   |
+| Salto de línea      | línea con dos espacios [ ][ ] |     Nueva línea      |
+| Nota al pie         |         palabra[\^1]          | Cita a pie de página |
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Cargar datos
+
+```{r leer-archivo, echo=TRUE, warning=FALSE}
+library(readxl)
+Data <- read_excel("C:/Users/KikeLenovo/OneDrive - Universidad de Córdoba/Escritorio/Universidad/Informatica/R computación/12870_2024_5411_MOESM1_ESM.xlsx",
+                   skip = 1)
+```
+
+# Cargar las librerias
+
+```{r cargar-librerias, echo=TRUE, warning=FALSE, message=FALSE}
+library('dplyr')
+library('ggplot2') 
+```
+
+# Seleccionar columnas de interes
+
+```{r selección-datos, echo=TRUE, warning=FALSE, message=FALSE}
+Seleccion <- Data %>%
+  select(CHROM, POS, FILTER)
+```
+
+## Vista de archivos
+
+```{r vista-datos, echo=TRUE}
+knitr::kable(head(Seleccion, 10), align = 'c', caption = "Tabla 1: Diez primeras filas")
+```
+
+# Including Plots
+
+## Grafico densidad cromosoma 1
+
+Usamos ggplot, @ggplot22016. Dplyr, @R-dplyr. Readx, @R-readxl
+
+```{r gráfica-densidad-cromosoma1, echo=FALSE, fig.cap="Figura 1: Densidad de variantes en *Cromosoma 1*", fig.align='center', out.width='65%'}
+CROM1 <- Seleccion %>%
+  filter(CHROM == "NC_021160.1") 
+
+CROM1 %>%
+  ggplot(aes(x = POS)) +
+  geom_density(fill = "darkblue") +
+  labs(x = "Posición en el cromosoma", 
+       y = "Densidad") 
+```
+
+# Información de la sesión y referencias
+
+```{r sessionInfo, echo=FALSE}
+session <- sessionInfo()
+print(session)
+```
